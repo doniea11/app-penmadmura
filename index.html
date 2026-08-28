@@ -663,6 +663,16 @@
     // Pengganti google.script.run menggunakan Fetch API murni agar bisa berjalan di luar server Google
     function callServer(functionName, args, successCallback) {
       var fullUrl = SCRIPT_URL + "?func=" + functionName + "&params=" + encodeURIComponent(JSON.stringify(args || []));
+      
+      fetch(fullUrl, { method: 'GET', mode: 'cors' })
+        .then(res => res.json())
+        .then(res => { if(successCallback) successCallback(res); })
+        .catch(err => {
+          console.error("Gagal terhubung ke server Apps Script:", err);
+          showToast("Koneksi server bermasalah", "error");
+        });
+    }
+      var fullUrl = SCRIPT_URL + "?func=" + functionName + "&params=" + encodeURIComponent(JSON.stringify(args || []));
       fetch(fullUrl)
         .then(res => res.json())
         .then(res => { if(successCallback) successCallback(res); })
