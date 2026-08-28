@@ -664,6 +664,21 @@
     function callServer(functionName, args, successCallback) {
       var fullUrl = SCRIPT_URL + "?func=" + functionName + "&params=" + encodeURIComponent(JSON.stringify(args || []));
       
+      fetch(fullUrl)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(res => {
+          if (successCallback) successCallback(res);
+        })
+        .catch(err => {
+          console.error("Gagal terhubung ke server Apps Script:", err);
+          showToast("Koneksi server bermasalah", "error");
+        });
+    }
+      var fullUrl = SCRIPT_URL + "?func=" + functionName + "&params=" + encodeURIComponent(JSON.stringify(args || []));
+      
       fetch(fullUrl, { method: 'GET', mode: 'cors' })
         .then(res => res.json())
         .then(res => { if(successCallback) successCallback(res); })
